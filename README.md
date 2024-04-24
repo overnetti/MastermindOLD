@@ -3,6 +3,8 @@ Mastermind is a single player puzzle game where players have a limited number of
 
 The game has 4 difficulty levels, a round timer, score multipliers depending on the difficulty level and round the player is on, a play again feature, data collection on the player's gaming achievements, an executable file for easy launch, and game logs for debugging or gameplay review.
 
+The code for the game logic is located in `mastermind.py` and the project has been packaged into an `.exe` file using `PyInstaller`.
+
 ## How To Play
 Using the hints given, solve the secret combination of numbers. The computer will tell you whether you have entered the correct digit and whether any of your correct digits are in the correct position. It will not, however, tell you which digit is in the correct position. Create combinations of numbers until you unlock the code. The more codes you unlock, the higher you level up!
 
