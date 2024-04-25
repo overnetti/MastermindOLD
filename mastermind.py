@@ -41,6 +41,7 @@ class Mastermind:
         winningValue = randomdotorgResponse.text
         joinedWinningValue = ''.join(winningValue.split())
         logging.info(f'Winning number generated: {joinedWinningValue}')
+        print(joinedWinningValue)
         return joinedWinningValue
     
     def playGame(self):
@@ -105,7 +106,7 @@ class Mastermind:
         logging.info(f'Computer response: Congratulations, you have guessed the combination! Your score is: {self.roundScore}')
         logging.info(f'Your current XP is {self.player.currentXP}/{self.player.xpToNextLevel}\n')
         logging.info(f'Your current win rate is: {self.player.winRate}%\n')
-        if self.player.highestScore > self.roundScore:
+        if self.player.highestScore >= self.roundScore:
             print(f'Wow! You\'ve set a new high score: {self.player.highestScore}')
             logging.info(f'Computer response: Wow! You\'ve set a new high score: {self.player.highestScore}')
         self.player.updatePlayerData()
@@ -155,7 +156,6 @@ class Mastermind:
                 self.player.currentXP = roundScore - remainderXP
     
     def handleTimeout(self):
-        self.player.gamesPlayed += 1
         self.player.updatePlayerData()
     
     def difficultyMultiplier(self, currentScore):
@@ -186,9 +186,18 @@ class NormalDifficulty(Mastermind):
 
 class HardDifficulty(Mastermind):
     def __init__(self, player):
-        super().__init__(player)
+        self.roundCounter = 1
+        self.remainingGuess = 10
         self.inputLength = 6
+        self.totalRounds = 10
         self.maxRandomDigit = 9
+        self.minRandomDigit = 0
+        self.inputTimer = 30
+        self.baseScore = 100
+        self.currentScore = 0
+        self.roundScore = 0
+        self.player = player
+        self.winningCombo = self.generateWinningCombo()
     
     def checkRequirements(self, userGuess):
         return len(userGuess) != self.inputLength or not userGuess.isdigit()
@@ -198,11 +207,18 @@ class HardDifficulty(Mastermind):
 
 class ImpossibruDifficulty(Mastermind):
     def __init__(self, player):
-        super().__init__(player)
-        self.inputLength = 10
+        self.roundCounter = 1
         self.remainingGuess = 5
+        self.inputLength = 10
         self.totalRounds = 5
         self.maxRandomDigit = 9
+        self.minRandomDigit = 0
+        self.inputTimer = 30
+        self.baseScore = 100
+        self.currentScore = 0
+        self.roundScore = 0
+        self.player = player
+        self.winningCombo = self.generateWinningCombo()
     
     def checkRequirements(self, userGuess):
         return len(userGuess) != self.inputLength or not userGuess.isdigit()
