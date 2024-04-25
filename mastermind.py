@@ -41,7 +41,6 @@ class Mastermind:
         winningValue = randomdotorgResponse.text
         joinedWinningValue = ''.join(winningValue.split())
         logging.info(f'Winning number generated: {joinedWinningValue}')
-        print(joinedWinningValue)
         return joinedWinningValue
     
     def playGame(self):
