@@ -96,7 +96,7 @@ class Mastermind:
         self.currentScore += self.baseScore
         self.roundScore += self.scoring(self.currentScore)
         self.handleLeveling(self.roundScore)
-        self.player.highestScore = max(self.player.highestScore, self.scoring(self.currentScore))
+        self.player.highestScore = max(self.player.highestScore, self.scoring(self.roundScore))
         self.player.gamesWon += 1
         self.player.winRate = round((self.player.gamesWon / self.player.gamesPlayed) * 100)
         print(f'Congratulations, you have guessed the combination! Your score is: {self.roundScore}')
