@@ -167,11 +167,20 @@ class Mastermind:
     def scoring(self, currentScore):
         return self.difficultyMultiplier(currentScore) + self.roundMultiplier(currentScore, self.roundCounter)
 
-
 class EasyPeasyDifficulty(Mastermind):
     def __init__(self, player):
-        super().__init__(player)
+        self.roundCounter = 1
+        self.remainingGuess = 10
+        self.inputLength = 4
+        self.totalRounds = 10
         self.maxRandomDigit = 5
+        self.minRandomDigit = 0
+        self.inputTimer = 30
+        self.baseScore = 100
+        self.currentScore = 0
+        self.roundScore = 0
+        self.player = player
+        self.winningCombo = self.generateWinningCombo()
     
     def checkRequirements(self, userGuess):
         return len(userGuess) != self.inputLength or not userGuess.isdigit() or any(char in userGuess for char in ['6','7','8','9'])
@@ -225,7 +234,6 @@ class ImpossibruDifficulty(Mastermind):
     def difficultyMultiplier(self, currentScore):
         return currentScore * 4
 
-
 class Player:
     def __init__(self):
         self.db = TinyDB('./db.json')
@@ -275,23 +283,21 @@ class Player:
                     continue
     
     def loadPlayerData(self):
-        self.highestScore = self.playerTable.search(Query().user==self.username)[0]['highestScore']
-        self.currentLevel = self.playerTable.search(Query().user==self.username)[0]['currentLevel']
-        self.currentXP = self.playerTable.search(Query().user==self.username)[0]['currentXP']
-        self.xpToNextLevel = self.playerTable.search(Query().user==self.username)[0]['xpToNextLevel']
-        self.gamesWon = self.playerTable.search(Query().user==self.username)[0]['gamesWon']
-        self.gamesPlayed = self.playerTable.search(Query().user==self.username)[0]['gamesPlayed']
-        self.winRate = self.playerTable.search(Query().user==self.username)[0]['winRate']
+        try:
+            record = self.playerTable.get(Query().user==self.username)
+        except Exception:
+            logging.error('Error encountered getting player info.', exc_info = True)
+            raise
+
+        for key in ['highestScore', 'currentLevel', 'currentXP', 
+                    'xpToNextLevel', 'gamesWon', 'gamesPlayed', 'winRate']:
+            setattr(self, key, record[key])
 
     def updatePlayerData(self):
-        self.playerTable.update({'highestScore':self.highestScore}, Query().user==self.username)
-        self.playerTable.update({'currentLevel':self.currentLevel}, Query().user==self.username)
-        self.playerTable.update({'currentXP':self.currentXP}, Query().user==self.username)
-        self.playerTable.update({'xpToNextLevel':self.xpToNextLevel}, Query().user==self.username)
-        self.playerTable.update({'gamesWon':self.gamesWon}, Query().user==self.username)
-        self.playerTable.update({'gamesPlayed':self.gamesPlayed}, Query().user==self.username)
-        self.playerTable.update({'winRate':self.winRate}, Query().user==self.username)
-
+        record = {'highestScore': self.highestScore, 'currentLevel': self.currentLevel, 'currentXP': self.currentXP, 
+                  'xpToNextLevel': self.xpToNextLevel, 'gamesWon': self.gamesWon, 'gamesPlayed': self.gamesPlayed,
+                  'gamesPlayed': self.gamesPlayed, 'winRate': self.winRate}
+        self.playerTable.upsert(record, Query().user==self.username)
 
 def enterGame(player):
     while True:
