@@ -46,10 +46,3 @@ The code concludes with a login function, which verifies the user's login status
 2. `python -m pip install requests`
 3. `python -m pip install tinydb`
 4. `python -m pip install inputimeout`
-
-## Future Improvements/Updates to come
-1. Code quality updates, modularization of classes into separate files
-2. Attributes in a config file for easier access and reuse
-3. Password encryption
-4. Local and online multiplayer options
-5. Logger module for both delayed and instantaneous debugging messages
